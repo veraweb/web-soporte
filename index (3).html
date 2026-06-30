@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banco de Camelot</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green-dark:  #1B5E20;
+    --green-mid:   #2E7D32;
+    --green-light: #43A047;
+    --green-pale:  #E8F5E9;
+    --green-acc:   #A5D6A7;
+    --white:       #FFFFFF;
+    --gray-1:      #F5F5F5;
+    --gray-2:      #E0E0E0;
+    --gray-3:      #9E9E9E;
+    --text:        #1A1A1A;
+    --text-soft:   #555555;
+    --red:         #C62828;
+    --red-light:   #FFEBEE;
+  }
+
+  body { font-family: 'Inter', sans-serif; background: var(--gray-1); color: var(--text); }
+
+  /* ── LOGIN PAGE ── */
+  #login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-light) 100%);
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: var(--green-dark);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 18px;
+  }
+
+  .logo-text { line-height: 1.1; }
+  .logo-text span { display: block; }
+  .logo-name { font-weight: 700; font-size: 16px; color: var(--green-dark); }
+  .logo-sub  { font-size: 11px; color: var(--gray-3); }
+
+  .login-title { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .login-sub   { font-size: 13px; color: var(--text-soft); margin-bottom: 28px; }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-soft); margin-bottom: 6px; letter-spacing: .5px; text-transform: uppercase; }
+  .field input {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--gray-2);
+    border-radius: 8px; font-size: 14px;
+    outline: none; transition: border .2s;
+    font-family: inherit;
+  }
+  .field input:focus { border-color: var(--green-mid); }
+
+  .btn-login {
+    width: 100%; padding: 13px;
+    background: var(--green-dark);
+    color: white; border: none;
+    border-radius: 8px; font-size: 15px;
+    font-weight: 600; cursor: pointer;
+    margin-top: 8px; transition: background .2s;
+    font-family: inherit;
+  }
+  .btn-login:hover { background: var(--green-mid); }
+
+  .error-box {
+    display: none;
+    background: var(--red-light);
+    border: 1px solid #FFCDD2;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--red);
+  }
+
+  .telegram-help {
+    display: none;
+    margin-top: 14px;
+    background: var(--green-pale);
+    border: 1px solid var(--green-acc);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--green-dark);
+    text-align: center;
+  }
+
+  .telegram-help a {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 8px;
+    background: var(--green-dark);
+    color: white; text-decoration: none;
+    padding: 8px 16px; border-radius: 6px;
+    font-weight: 600; font-size: 13px;
+    transition: background .2s;
+  }
+  .telegram-help a:hover { background: var(--green-mid); }
+
+  /* ── DASHBOARD ── */
+  #dashboard-page { display: none; min-height: 100vh; }
+
+  .topbar {
+    background: var(--green-dark);
+    padding: 0 32px;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .topbar-logo { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo .logo-icon { width: 32px; height: 32px; font-size: 14px; }
+  .topbar-logo .logo-name { color: white; font-size: 15px; }
+
+  .topbar-user { display: flex; align-items: center; gap: 12px; }
+  .topbar-user span { color: rgba(255,255,255,.8); font-size: 13px; }
+  .btn-logout {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: white; padding: 6px 14px;
+    border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-family: inherit;
+    transition: background .2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,.25); }
+
+  .navbar {
+    background: white;
+    border-bottom: 1px solid var(--gray-2);
+    padding: 0 32px;
+    display: flex; gap: 4px;
+  }
+
+  .nav-item {
+    padding: 14px 16px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-soft);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  .nav-item:hover { color: var(--green-dark); }
+  .nav-item.active { color: var(--green-dark); border-bottom-color: var(--green-dark); }
+
+  .dashboard-body { padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+  .greeting { margin-bottom: 28px; }
+  .greeting h1 { font-size: 22px; font-weight: 600; }
+  .greeting p  { font-size: 14px; color: var(--text-soft); margin-top: 4px; }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    border: 1px solid var(--gray-2);
+  }
+
+  .card-label { font-size: 11px; font-weight: 600; color: var(--gray-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .card-value { font-size: 26px; font-weight: 700; color: var(--green-dark); }
+  .card-sub   { font-size: 12px; color: var(--text-soft); margin-top: 4px; }
+
+  .card.accent { background: var(--green-dark); border-color: var(--green-dark); }
+  .card.accent .card-label { color: var(--green-acc); }
+  .card.accent .card-value { color: white; }
+  .card.accent .card-sub   { color: rgba(255,255,255,.7); }
+
+  .table-section {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--gray-2);
+    overflow: hidden;
+  }
+
+  .table-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--gray-2);
+    font-weight: 600; font-size: 14px;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 12px 22px; text-align: left; font-size: 11px; font-weight: 600; color: var(--gray-3); text-transform: uppercase; letter-spacing: .5px; background: var(--gray-1); }
+  td { padding: 14px 22px; font-size: 13px; border-top: 1px solid var(--gray-2); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green { background: var(--green-pale); color: var(--green-dark); }
+  .badge.red   { background: var(--red-light);  color: var(--red); }
+
+  /* ── CHATBOT BUBBLE ── */
+  .chat-bubble {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 999;
+  }
+
+  .chat-btn {
+    width: 56px; height: 56px;
+    background: var(--green-dark);
+    border-radius: 50%; border: none;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(27,94,32,.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(27,94,32,.5); }
+  .chat-btn svg { width: 26px; height: 26px; fill: white; }
+
+  .chat-tooltip {
+    position: absolute;
+    bottom: 64px; right: 0;
+    background: var(--green-dark);
+    color: white; font-size: 12px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s;
+  }
+  .chat-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; right: 20px;
+    border: 6px solid transparent;
+    border-bottom: none;
+    border-top-color: var(--green-dark);
+  }
+  .chat-bubble:hover .chat-tooltip { opacity: 1; }
+
+  .chat-badge {
+    position: absolute;
+    top: -3px; right: -3px;
+    width: 16px; height: 16px;
+    background: #FF5252;
+    border-radius: 50%; border: 2px solid white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: white; font-weight: 700;
+  }
+
+  /* ── REPORT BUTTON ── */
+  .report-btn-wrap {
+    display: flex; justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  .btn-report {
+    display: flex; align-items: center; gap: 8px;
+    background: white;
+    border: 1.5px solid var(--green-dark);
+    color: var(--green-dark);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: all .2s;
+  }
+  .btn-report:hover { background: var(--green-dark); color: white; }
+  .btn-report svg { width: 16px; height: 16px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-box {
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    width: 100%; max-width: 440px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 18px;
+    background: none; border: none;
+    font-size: 24px; color: var(--gray-3);
+    cursor: pointer; line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--green-dark); }
+  .modal-sub { font-size: 13px; color: var(--text-soft); margin-bottom: 20px; }
+  #sendpulse-widget-container { min-height: 60px; }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="logo">
+      <div class="logo-icon">BC</div>
+      <div class="logo-text">
+        <span class="logo-name">Banco de Camelot</span>
+        <span class="logo-sub">Banca en línea</span>
+      </div>
+    </div>
+
+    <div class="login-title">Iniciar sesión</div>
+    <div class="login-sub">Ingresa tus credenciales para acceder</div>
+
+    <div class="field">
+      <label>Usuario</label>
+      <input type="text" id="user-input" placeholder="Tu usuario bancario">
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="pass-input" placeholder="••••••••">
+    </div>
+
+    <button class="btn-login" onclick="tryLogin()">Ingresar</button>
+
+    <div class="error-box" id="error-box">
+      ⚠️ Usuario o contraseña incorrectos. Por favor verifica tus datos.
+    </div>
+
+    <div class="telegram-help" id="telegram-help">
+      ¿Tienes problemas para ingresar? Nuestro asistente puede ayudarte.
+      <br>
+      <a href="https://t.me/BancoMovilGrupo3bot" target="_blank">
+        <!-- Telegram icon -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.857l-2.945-.918c-.64-.203-.654-.64.136-.954l11.5-4.434c.534-.194 1.001.13.833.67z"/></svg>
+        Contactar soporte en Telegram
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dashboard-page">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="logo-icon">BC</div>
+      <span class="logo-name">Banco de Camelot</span>
+    </div>
+    <div class="topbar-user">
+      <span>Bienvenido, <strong id="username-display" style="color:white"></strong></span>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <div class="nav-item active">Inicio</div>
+    <div class="nav-item">Transferencias</div>
+    <div class="nav-item">Pagos</div>
+    <div class="nav-item">Historial</div>
+    <div class="nav-item">Configuración</div>
+  </div>
+
+  <div class="dashboard-body">
+    <div class="greeting">
+      <h1>Panel principal</h1>
+      <p>Resumen de tu cuenta al día de hoy</p>
+    </div>
+
+    <div class="report-btn-wrap">
+      <button class="btn-report" onclick="openReportModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Reportar un problema
+      </button>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card accent">
+        <div class="card-label">Saldo disponible</div>
+        <div class="card-value">$4,820.00</div>
+        <div class="card-sub">Cuenta de ahorros · ***4521</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Último ingreso</div>
+        <div class="card-value">$1,200.00</div>
+        <div class="card-sub">14 jun 2026 — Nómina</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Último egreso</div>
+        <div class="card-value">$380.00</div>
+        <div class="card-sub">12 jun 2026 — Pago servicios</div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">Últimos movimientos</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Monto</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>14 jun 2026</td><td>Nómina empresa</td><td>+$1,200.00</td><td><span class="badge green">Completado</span></td></tr>
+          <tr><td>12 jun 2026</td><td>Pago servicios básicos</td><td>-$380.00</td><td><span class="badge green">Completado</span></td></tr>
+          <tr><td>10 jun 2026</td><td>Transferencia a Juan P.</td><td>-$150.00</td><td><span class="badge green">Completado</span></td></tr>
+          <tr><td>08 jun 2026</td><td>Pago tarjeta de crédito</td><td>-$500.00</td><td><span class="badge green">Completado</span></td></tr>
+          <tr><td>05 jun 2026</td><td>Transferencia recibida</td><td>+$650.00</td><td><span class="badge green">Completado</span></td></tr>
+          <tr><td>02 jun 2026</td><td>Compra en línea</td><td>-$89.00</td><td><span class="badge red">Rechazado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Chatbot bubble -->
+  <div class="chat-bubble">
+    <div class="chat-tooltip">¿Necesitas ayuda? Chatea con nosotros</div>
+    <button class="chat-btn" onclick="openChat()">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.857l-2.945-.918c-.64-.203-.654-.64.136-.954l11.5-4.434c.534-.194 1.001.13.833.67z"/></svg>
+    </button>
+    <div class="chat-badge">1</div>
+  </div>
+</div>
+
+<script>
+  // Credenciales de prueba
+  const USERS = {
+    "admin":   "1234",
+    "usuario": "banco123",
+    "camelot": "camelot"
+  };
+
+  let attempts = 0;
+
+  function tryLogin() {
+    const user = document.getElementById('user-input').value.trim();
+    const pass = document.getElementById('pass-input').value.trim();
+    const errorBox = document.getElementById('error-box');
+    const telegramHelp = document.getElementById('telegram-help');
+
+    if (USERS[user] && USERS[user] === pass) {
+      // Login correcto
+      attempts = 0;
+      errorBox.style.display = 'none';
+      telegramHelp.style.display = 'none';
+      document.getElementById('username-display').textContent = user;
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('dashboard-page').style.display = 'block';
+    } else {
+      attempts++;
+      errorBox.style.display = 'block';
+      if (attempts >= 2) {
+        telegramHelp.style.display = 'block';
+      }
+    }
+  }
+
+  // Enter key en login
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') {
+      tryLogin();
+    }
+  });
+
+  function logout() {
+    document.getElementById('dashboard-page').style.display = 'none';
+    document.getElementById('login-page').style.display = 'flex';
+    document.getElementById('user-input').value = '';
+    document.getElementById('pass-input').value = '';
+    document.getElementById('error-box').style.display = 'none';
+    document.getElementById('telegram-help').style.display = 'none';
+    attempts = 0;
+  }
+
+  function openChat() {
+    window.open('https://t.me/BancoMovilGrupo3bot', '_blank');
+  }
+
+  function openReportModal() {
+    document.getElementById('report-modal').style.display = 'flex';
+  }
+
+  function closeReportModal() {
+    document.getElementById('report-modal').style.display = 'none';
+  }
+</script>
+
+<!-- ── REPORT MODAL (SendPulse Widget) ── -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeReportModal()">&times;</button>
+    <h3>Reportar un problema</h3>
+    <p class="modal-sub">Completa el formulario y nuestro asistente te contactará de inmediato por Telegram.</p>
+    <div id="sendpulse-widget-container">
+      <script src="//fbstore.sendpulse.com/loader.js" data-sp-widget-id="3da6daf2-4ff6-49f8-a61e-bfd3cad06c28" async></script>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
